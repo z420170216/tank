@@ -1,0 +1,148 @@
+package com.zhangwenbo.tank;
+
+import com.zhangwenbo.tank.Enum.Dir;
+import com.zhangwenbo.tank.bean.Bullet;
+import com.zhangwenbo.tank.bean.Tank;
+
+import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TankFrame extends Frame {
+
+    private Image offScreenImage = null;
+
+    private volatile static TankFrame tf;
+    public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+
+    private Tank myTank = new Tank();
+    private List<Bullet> bullets = new ArrayList<>();
+
+    private TankFrame() {
+        setSize(GAME_WIDTH, GAME_HEIGHT);
+        setTitle("坦克大战");
+        setResizable(false);
+        setVisible(true);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        addKeyListener(new KeyAdapter() {
+            boolean bU = false;
+            boolean bL = false;
+            boolean bR = false;
+            boolean bD = false;
+
+            // 按下
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                switch (keyCode) {
+                    case KeyEvent.VK_LEFT:
+                        bL = true;
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        bR = true;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        bD = true;
+                        break;
+                    case KeyEvent.VK_UP:
+                        bU = true;
+                        break;
+                    case KeyEvent.VK_CONTROL:
+                        myTank.fire();
+                        break;
+                    default:
+                }
+                setMainTankDir();
+            }
+
+            // 释放
+            @Override
+            public void keyReleased(KeyEvent e) {
+                int keyCode = e.getKeyCode();
+                switch (keyCode) {
+                    case KeyEvent.VK_LEFT:
+                        bL = false;
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        bR = false;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        bD = false;
+                        break;
+                    case KeyEvent.VK_UP:
+                        bU = false;
+                        break;
+                    default:
+                }
+                setMainTankDir();
+            }
+
+            private void setMainTankDir() {
+                if (!bL && !bR && !bU && !bD) {
+                    myTank.setMoving(false);
+                } else {
+                    if (bL) myTank.setDir(Dir.LEFT);
+                    if (bR) myTank.setDir(Dir.RIGHT);
+                    if (bU) myTank.setDir(Dir.UP);
+                    if (bD) myTank.setDir(Dir.DOWN);
+                    myTank.setMoving(true);
+                }
+            }
+        });
+    }
+    public static TankFrame getInstance() {
+        if (tf == null) {
+            synchronized (TankFrame.class) {
+                if (tf == null) {
+                    tf = new TankFrame();
+                    return tf;
+                } else {
+                    return tf;
+                }
+            }
+        } else {
+            return tf;
+        }
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    // 双缓冲概念
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(GAME_WIDTH, GAME_HEIGHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        paint(gOffScreen);
+        gOffScreen.setColor(c);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        Color c = g.getColor();
+        g.setColor(Color.white);
+        g.drawString("子弹的数量:"+bullets.size(),10,60);
+        g.setColor(c);
+        myTank.paint(g);
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+        }
+    }
+}
