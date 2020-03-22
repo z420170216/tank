@@ -2,6 +2,7 @@ package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.bean.Bullet;
+import com.zhangwenbo.tank.bean.Expload;
 import com.zhangwenbo.tank.bean.Tank;
 
 import java.awt.*;
@@ -20,7 +21,9 @@ public class TankFrame extends Frame {
     public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
     private Tank myTank = new Tank();
+    private List<Tank> tanks = new ArrayList<Tank>();
     private List<Bullet> bullets = new ArrayList<Bullet>();
+    private List<Expload> exploads = new ArrayList<Expload>();
 
     private TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -100,24 +103,6 @@ public class TankFrame extends Frame {
             }
         });
     }
-    public static TankFrame getInstance() {
-        if (tf == null) {
-            synchronized (TankFrame.class) {
-                if (tf == null) {
-                    tf = new TankFrame();
-                    return tf;
-                } else {
-                    return tf;
-                }
-            }
-        } else {
-            return tf;
-        }
-    }
-
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
 
     // 双缓冲概念解决屏幕闪烁
     @Override
@@ -138,11 +123,61 @@ public class TankFrame extends Frame {
     public void paint(Graphics g) {
         Color c = g.getColor();
         g.setColor(Color.white);
-        g.drawString("子弹的数量:"+bullets.size(),10,60);
+        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
+        g.drawString("敌人的数量:" + tanks.size(), 10, 80);
+        g.drawString("爆炸的数量:" + exploads.size(), 10, 100);
         g.setColor(c);
         myTank.paint(g);
         for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
+        }
+        for (int i = 0; i < tanks.size(); i++) {
+            tanks.get(i).paint(g);
+        }
+        for (int i = 0; i < bullets.size(); i++) {
+            for (int j = 0; j < tanks.size(); j++) {
+                bullets.get(i).collideWith(tanks.get(j));
+            }
+        }
+        for (int i = 0; i < exploads.size(); i++) {
+            exploads.get(i).paint(g);
+        }
+    }
+
+
+
+    public List<Expload> getExploads() {
+        return exploads;
+    }
+
+    public void setExploads(List<Expload> exploads) {
+        this.exploads = exploads;
+    }
+
+    public List<Tank> getTanks() {
+        return tanks;
+    }
+
+    public void setTanks(List<Tank> tanks) {
+        this.tanks = tanks;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public static TankFrame getInstance() {
+        if (tf == null) {
+            synchronized (TankFrame.class) {
+                if (tf == null) {
+                    tf = new TankFrame();
+                    return tf;
+                } else {
+                    return tf;
+                }
+            }
+        } else {
+            return tf;
         }
     }
 }
