@@ -13,8 +13,11 @@ public class Bullet {
     private int x, y;
     private Group group = Group.BAD;
 
-    public static int WIDTH = ResourceMgr.bulletL.getWidth();
-    public static int HEIGHT = ResourceMgr.bulletL.getHeight();
+    public static int WIDTH = ResourceMgr.getInstance().getBulletL().getWidth();
+    public static int HEIGHT = ResourceMgr.getInstance().getBulletL().getHeight();
+
+    private Rectangle rect = new Rectangle();
+
 
     private boolean living = true;
 
@@ -24,6 +27,13 @@ public class Bullet {
         this.y = y;
         this.group = group;
         this.dir = dir;
+
+        rect.x=x;
+        rect.y=y;
+        rect.height=HEIGHT;
+        rect.width=WIDTH;
+
+        TankFrame.getInstance().getBullets().add(this);
     }
 
     public Dir getDir() {
@@ -38,16 +48,16 @@ public class Bullet {
         move();
         switch (dir) {
             case UP:
-                g.drawImage(ResourceMgr.bulletU, x, y, null);
+                g.drawImage(ResourceMgr.getInstance().getBulletU(), x, y, null);
                 break;
             case DOWN:
-                g.drawImage(ResourceMgr.bulletD, x, y, null);
+                g.drawImage(ResourceMgr.getInstance().getBulletD(), x, y, null);
                 break;
             case LEFT:
-                g.drawImage(ResourceMgr.bulletL, x, y, null);
+                g.drawImage(ResourceMgr.getInstance().getBulletL(), x, y, null);
                 break;
             case RIGHT:
-                g.drawImage(ResourceMgr.bulletR, x, y, null);
+                g.drawImage(ResourceMgr.getInstance().getBulletR(), x, y, null);
                 break;
         }
     }
@@ -74,15 +84,15 @@ public class Bullet {
         if (!living) {
             tf.getBullets().remove(this);
         }
+        rect.x=this.x;
+        rect.y=this.y;
     }
 
     public void collideWith(Tank tank) {
         if (this.group == tank.getGroup()) {
             return ;
         } else {
-            Rectangle tankRectangle = new Rectangle(tank.getX(), tank.getY(), Tank.WIDTH, Tank.HEIGHT);
-            Rectangle bulletRectangle = new Rectangle(this.x, this.y, WIDTH, HEIGHT);
-            if (tankRectangle.intersects(bulletRectangle)) {
+            if (this.rect.intersects(tank.getRect())) {
                 this.die();
                 tank.die();
             }

@@ -3,16 +3,20 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
+import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
+import com.zhangwenbo.tank.strategy.DefaultFireStrategy;
+import com.zhangwenbo.tank.strategy.FireStrategy;
 import com.zhangwenbo.tank.utils.Audio;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
 import java.util.Random;
 
 public class Tank {
     private int x = 300, y = 500;
-    public static int WIDTH = ResourceMgr.tankL.getWidth();
-    public static int HEIGHT = ResourceMgr.tankL.getHeight();
+    public static int WIDTH = ResourceMgr.getInstance().getTankL().getWidth();
+    public static int HEIGHT = ResourceMgr.getInstance().getTankL().getHeight();
     private static final int SPEED = 5;
     private Dir dir = Dir.DOWN;
     private boolean moving = true;
@@ -20,7 +24,10 @@ public class Tank {
     private boolean living = true;
     private Random random = new Random();
 
-    Rectangle rect = new Rectangle();
+    private FireStrategy fs = null;
+
+    private Rectangle rect = new Rectangle();
+
 
     public Tank() {
         super();
@@ -37,6 +44,21 @@ public class Tank {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
+        try{
+            if(group == Group.GOOD){
+                Class<?> clazz = Class.forName(PropertyMgr.getInstance().getString("goodFS"));
+                Constructor<?> constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                fs = (FireStrategy) constructor.newInstance();
+            }else{
+                Class<?> clazz = Class.forName(PropertyMgr.getInstance().getString("badFS"));
+                Constructor<?> constructor = clazz.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                fs = (FireStrategy) constructor.newInstance();
+            }
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -46,18 +68,19 @@ public class Tank {
             return;
         }
         move();
+        ResourceMgr resourceMgr = ResourceMgr.getInstance();
         switch (dir) {
             case UP:
-                g.drawImage(ResourceMgr.tankU, x, y, null);
+                g.drawImage(resourceMgr.getTankU(), x, y, null);
                 break;
             case DOWN:
-                g.drawImage(ResourceMgr.tankD, x, y, null);
+                g.drawImage(resourceMgr.getTankD(), x, y, null);
                 break;
             case LEFT:
-                g.drawImage(ResourceMgr.tankL, x, y, null);
+                g.drawImage(resourceMgr.getTankL(), x, y, null);
                 break;
             case RIGHT:
-                g.drawImage(ResourceMgr.tankR, x, y, null);
+                g.drawImage(resourceMgr.getTankR(), x, y, null);
                 break;
         }
     }
@@ -104,8 +127,7 @@ public class Tank {
     }
 
     public void fire() {
-        Bullet bullet = new Bullet(this.x + WIDTH / 2 - Bullet.WIDTH / 2, this.y + HEIGHT / 2 - Bullet.HEIGHT / 2, this.group, this.dir);
-        TankFrame.getInstance().getBullets().add(bullet);
+        fs.fire(this);
     }
 
     public void die() {
@@ -118,37 +140,16 @@ public class Tank {
         }).start();
     }
 
-
     public Group getGroup() {
         return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public boolean isLiving() {
-        return living;
-    }
-
-    public void setLiving(boolean living) {
-        this.living = living;
     }
 
     public int getX() {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
     public Dir getDir() {
@@ -161,5 +162,9 @@ public class Tank {
 
     public void setMoving(boolean moving) {
         this.moving = moving;
+    }
+
+    public Rectangle getRect() {
+        return rect;
     }
 }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class PropertyMgr {
-    private static PropertyMgr propertyMgr;
+    private volatile static PropertyMgr INSTANCE = null;
     private static Properties props = new Properties();
 
     private PropertyMgr() {
@@ -27,23 +27,19 @@ public class PropertyMgr {
     }
 
     public static PropertyMgr getInstance() {
-        if (propertyMgr == null) {
+        if (INSTANCE == null) {
             synchronized (PropertyMgr.class) {
-                if (propertyMgr == null) {
-                    propertyMgr = new PropertyMgr();
-                    try {
-                        propertyMgr.props.load(PropertyMgr.class.getClassLoader().getResourceAsStream("config/config"));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                try {
+                    if (INSTANCE == null) {
+                        INSTANCE = new PropertyMgr();
+                        INSTANCE.props.load(PropertyMgr.class.getClassLoader().getResourceAsStream("config/config"));
                     }
-                    return propertyMgr;
-                } else {
-                    return propertyMgr;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        } else {
-            return propertyMgr;
         }
+        return INSTANCE;
 
 
     }

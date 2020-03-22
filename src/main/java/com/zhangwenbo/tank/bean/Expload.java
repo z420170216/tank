@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class Expload {
     private int x = 300, y = 500;
-    public static int WIDTH = ResourceMgr.tankL.getWidth();
-    public static int HEIGHT = ResourceMgr.tankL.getHeight();
+    public static int WIDTH = ResourceMgr.getInstance().getExplodes()[0].getWidth();
+    public static int HEIGHT = ResourceMgr.getInstance().getExplodes()[0].getHeight();
     private int step = 0;
     private Group group = Group.GOOD;
     private boolean living = true;
@@ -26,11 +26,12 @@ public class Expload {
     }
 
     public void paint(Graphics g) {
+        ResourceMgr resourceMgr = ResourceMgr.getInstance();
         if (living) {
-            g.drawImage(ResourceMgr.explodes[step], x, y, null);
+            g.drawImage(resourceMgr.getExplodes()[step], x, y, null);
             step++;
         }
-        if (step >= ResourceMgr.explodes.length) {
+        if (step >= resourceMgr.getExplodes().length) {
             die();
             TankFrame.getInstance().getExploads().remove(this);
         }

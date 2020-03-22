@@ -1,6 +1,7 @@
 package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
+import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.bean.Bullet;
 import com.zhangwenbo.tank.bean.Expload;
 import com.zhangwenbo.tank.bean.Tank;
@@ -20,7 +21,7 @@ public class TankFrame extends Frame {
     private volatile static TankFrame tf;
     public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
-    private Tank myTank = new Tank();
+    private Tank myTank = new Tank(500,300,Group.GOOD,Dir.UP);
     private List<Tank> tanks = new ArrayList<Tank>();
     private List<Bullet> bullets = new ArrayList<Bullet>();
     private List<Expload> exploads = new ArrayList<Expload>();
@@ -144,22 +145,12 @@ public class TankFrame extends Frame {
         }
     }
 
-
-
     public List<Expload> getExploads() {
         return exploads;
     }
 
-    public void setExploads(List<Expload> exploads) {
-        this.exploads = exploads;
-    }
-
     public List<Tank> getTanks() {
         return tanks;
-    }
-
-    public void setTanks(List<Tank> tanks) {
-        this.tanks = tanks;
     }
 
     public List<Bullet> getBullets() {
