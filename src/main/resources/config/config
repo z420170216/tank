@@ -1,4 +1,7 @@
-initTankCount=10
+initTankCount=1
 #FireStrategy
 goodFS=com.zhangwenbo.tank.strategy.FourDirFireStrategy
 badFS=com.zhangwenbo.tank.strategy.DefaultFireStrategy
+#TankFactory
+goodTankFactory=com.zhangwenbo.tank.factory.impl.GoodTankFactory
+badTankFactory=com.zhangwenbo.tank.factory.impl.BadTankFactory

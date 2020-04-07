@@ -1,18 +1,19 @@
 package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
-import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.bean.Bullet;
 import com.zhangwenbo.tank.bean.Expload;
 import com.zhangwenbo.tank.bean.Tank;
+import com.zhangwenbo.tank.factory.impl.GoodTankFactory;
+import com.zhangwenbo.tank.strategy.FourDirFireStrategy;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TankFrame extends Frame {
 
@@ -21,7 +22,7 @@ public class TankFrame extends Frame {
     private volatile static TankFrame tf;
     public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
 
-    private Tank myTank = new Tank(500,300,Group.GOOD,Dir.UP);
+    private Tank myTank = GoodTankFactory.getInstance().createTank(500,300,Dir.UP,FourDirFireStrategy.getInstance());
     private List<Tank> tanks = new ArrayList<Tank>();
     private List<Bullet> bullets = new ArrayList<Bullet>();
     private List<Expload> exploads = new ArrayList<Expload>();

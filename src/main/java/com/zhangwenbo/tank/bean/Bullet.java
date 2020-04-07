@@ -2,104 +2,29 @@ package com.zhangwenbo.tank.bean;
 
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
-import com.zhangwenbo.tank.TankFrame;
-import com.zhangwenbo.tank.mgr.ResourceMgr;
 
 import java.awt.*;
 
-public class Bullet {
-    private static final int SPEED = 10;
-    private Dir dir = Dir.DOWN;
-    private int x, y;
-    private Group group = Group.BAD;
+public abstract class Bullet {
+    Group group;
+    Rectangle rect;
+    Dir dir;
+    int x, y;
 
-    public static int WIDTH = ResourceMgr.getInstance().getBulletL().getWidth();
-    public static int HEIGHT = ResourceMgr.getInstance().getBulletL().getHeight();
+    public abstract void paint(Graphics g);
 
-    private Rectangle rect = new Rectangle();
+    public abstract void collideWith(Tank t);
 
+    public Group getGroup() {
+        return group;
+    }
 
-    private boolean living = true;
-
-    public Bullet(int x, int y, Group group, Dir dir) {
-        super();
-        this.x = x;
-        this.y = y;
-        this.group = group;
-        this.dir = dir;
-
-        rect.x=x;
-        rect.y=y;
-        rect.height=HEIGHT;
-        rect.width=WIDTH;
-
-        TankFrame.getInstance().getBullets().add(this);
+    public Rectangle getRect() {
+        return rect;
     }
 
     public Dir getDir() {
         return dir;
     }
 
-    public void setDir(Dir dir) {
-        this.dir = dir;
-    }
-
-    public void paint(Graphics g) {
-        move();
-        switch (dir) {
-            case UP:
-                g.drawImage(ResourceMgr.getInstance().getBulletU(), x, y, null);
-                break;
-            case DOWN:
-                g.drawImage(ResourceMgr.getInstance().getBulletD(), x, y, null);
-                break;
-            case LEFT:
-                g.drawImage(ResourceMgr.getInstance().getBulletL(), x, y, null);
-                break;
-            case RIGHT:
-                g.drawImage(ResourceMgr.getInstance().getBulletR(), x, y, null);
-                break;
-        }
-    }
-
-    private void move() {
-        switch (dir) {
-            case UP:
-                y -= SPEED;
-                break;
-            case DOWN:
-                y += SPEED;
-                break;
-            case LEFT:
-                x -= SPEED;
-                break;
-            case RIGHT:
-                x += SPEED;
-                break;
-        }
-        TankFrame tf = TankFrame.getInstance();
-        if (x < 0 || y < 0 || x > tf.GAME_WIDTH || y > tf.GAME_HEIGHT) {
-            living = false;
-        }
-        if (!living) {
-            tf.getBullets().remove(this);
-        }
-        rect.x=this.x;
-        rect.y=this.y;
-    }
-
-    public void collideWith(Tank tank) {
-        if (this.group == tank.getGroup()) {
-            return ;
-        } else {
-            if (this.rect.intersects(tank.getRect())) {
-                this.die();
-                tank.die();
-            }
-        }
-    }
-
-    private void die() {
-        this.living = false;
-    }
 }
