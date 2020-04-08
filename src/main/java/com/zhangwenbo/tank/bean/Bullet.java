@@ -3,6 +3,7 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
+import com.zhangwenbo.tank.facade.GameFacade;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ public class Bullet {
         rect.height=HEIGHT;
         rect.width=WIDTH;
 
-        TankFrame.getInstance().getBullets().add(this);
+        GameFacade.getInstance().getBullets().add(this);
     }
 
     public Dir getDir() {
@@ -77,12 +78,11 @@ public class Bullet {
                 x += SPEED;
                 break;
         }
-        TankFrame tf = TankFrame.getInstance();
-        if (x < 0 || y < 0 || x > tf.GAME_WIDTH || y > tf.GAME_HEIGHT) {
+        if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
             living = false;
         }
         if (!living) {
-            tf.getBullets().remove(this);
+            GameFacade.getInstance().getBullets().remove(this);
         }
         rect.x=this.x;
         rect.y=this.y;

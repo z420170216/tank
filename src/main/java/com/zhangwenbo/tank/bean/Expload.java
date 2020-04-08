@@ -1,7 +1,7 @@
 package com.zhangwenbo.tank.bean;
 
 import com.zhangwenbo.tank.Enum.Group;
-import com.zhangwenbo.tank.TankFrame;
+import com.zhangwenbo.tank.facade.GameFacade;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
 
 import java.awt.*;
@@ -33,7 +33,7 @@ public class Expload {
         }
         if (step >= resourceMgr.getExplodes().length) {
             die();
-            TankFrame.getInstance().getExploads().remove(this);
+            GameFacade.getInstance().getExploads().remove(this);
         }
     }
 

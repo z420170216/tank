@@ -1,32 +1,25 @@
 package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
-import com.zhangwenbo.tank.Enum.Group;
-import com.zhangwenbo.tank.bean.Bullet;
-import com.zhangwenbo.tank.bean.Expload;
 import com.zhangwenbo.tank.bean.Tank;
+import com.zhangwenbo.tank.facade.GameFacade;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
-import java.util.ArrayList;
 
 public class TankFrame extends Frame {
 
     private Image offScreenImage = null;
 
-    private volatile static TankFrame tf;
-    public static final int GAME_WIDTH = 800, GAME_HEIGHT = 600;
+    public static final int GAME_WIDTH = 1024, GAME_HEIGHT = 768;
 
-    private Tank myTank = new Tank(500,300,Group.GOOD,Dir.UP);
-    private List<Tank> tanks = new ArrayList<Tank>();
-    private List<Bullet> bullets = new ArrayList<Bullet>();
-    private List<Expload> exploads = new ArrayList<Expload>();
+    GameFacade gf = GameFacade.getInstance();
 
-    private TankFrame() {
+
+    public TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
         setTitle("坦克大战");
         setResizable(false);
@@ -62,7 +55,7 @@ public class TankFrame extends Frame {
                         bU = true;
                         break;
                     case KeyEvent.VK_CONTROL:
-                        myTank.fire();
+                        gf.getMyTank().fire();
                         break;
                     default:
                 }
@@ -92,6 +85,7 @@ public class TankFrame extends Frame {
             }
 
             private void setMainTankDir() {
+                Tank myTank = gf.getMyTank();
                 if (!bL && !bR && !bU && !bD) {
                     myTank.setMoving(false);
                 } else {
@@ -122,53 +116,7 @@ public class TankFrame extends Frame {
 
     @Override
     public void paint(Graphics g) {
-        Color c = g.getColor();
-        g.setColor(Color.white);
-        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
-        g.drawString("敌人的数量:" + tanks.size(), 10, 80);
-        g.drawString("爆炸的数量:" + exploads.size(), 10, 100);
-        g.setColor(c);
-        myTank.paint(g);
-        for (int i = 0; i < bullets.size(); i++) {
-            bullets.get(i).paint(g);
-        }
-        for (int i = 0; i < tanks.size(); i++) {
-            tanks.get(i).paint(g);
-        }
-        for (int i = 0; i < bullets.size(); i++) {
-            for (int j = 0; j < tanks.size(); j++) {
-                bullets.get(i).collideWith(tanks.get(j));
-            }
-        }
-        for (int i = 0; i < exploads.size(); i++) {
-            exploads.get(i).paint(g);
-        }
+        gf.paint(g);
     }
 
-    public List<Expload> getExploads() {
-        return exploads;
-    }
-
-    public List<Tank> getTanks() {
-        return tanks;
-    }
-
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
-
-    public static TankFrame getInstance() {
-        if (tf == null) {
-            synchronized (TankFrame.class) {
-                if (tf == null) {
-                    tf = new TankFrame();
-                    return tf;
-                } else {
-                    return tf;
-                }
-            }
-        } else {
-            return tf;
-        }
-    }
 }

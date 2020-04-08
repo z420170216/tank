@@ -3,15 +3,16 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
+import com.zhangwenbo.tank.facade.GameFacade;
 import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
-import com.zhangwenbo.tank.strategy.DefaultFireStrategy;
 import com.zhangwenbo.tank.strategy.FireStrategy;
 import com.zhangwenbo.tank.utils.Audio;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.util.Random;
+
 
 public class Tank {
     private int x = 300, y = 500;
@@ -27,6 +28,7 @@ public class Tank {
     private FireStrategy fs = null;
 
     private Rectangle rect = new Rectangle();
+
 
 
     public Tank() {
@@ -64,7 +66,7 @@ public class Tank {
 
     public void paint(Graphics g) {
         if (!living) {
-            TankFrame.getInstance().getTanks().remove(this);
+            GameFacade.getInstance().getTanks().remove(this);
             return;
         }
         move();
@@ -117,9 +119,9 @@ public class Tank {
 
     private void boundsCheck() {
         if (x < 0) x = 0;
-        if (x > 800 - WIDTH) x = 800 - WIDTH;
+        if (x > TankFrame.GAME_WIDTH - WIDTH) x = TankFrame.GAME_WIDTH - WIDTH;
         if (y < 30) y = 30;
-        if (y > 600 - HEIGHT) y = 600 - HEIGHT;
+        if (y > TankFrame.GAME_HEIGHT - HEIGHT) y = TankFrame.GAME_HEIGHT - HEIGHT;
     }
 
     private void turn() {
@@ -132,7 +134,7 @@ public class Tank {
 
     public void die() {
         this.living = false;
-        TankFrame.getInstance().getExploads().add(new Expload(this.x + WIDTH / 2 - Expload.WIDTH / 2, this.y + HEIGHT / 2 - Expload.HEIGHT / 2, this.group));
+        GameFacade.getInstance().getExploads().add(new Expload(this.x + WIDTH / 2 - Expload.WIDTH / 2, this.y + HEIGHT / 2 - Expload.HEIGHT / 2, this.group));
         new Thread(new Runnable() {
             public void run() {
                 new Audio("audio/explode.wav").play();
