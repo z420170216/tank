@@ -3,12 +3,12 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
-import com.zhangwenbo.tank.facade.GameFacade;
+import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
 
 import java.awt.*;
 
-public class Bullet {
+public class Bullet extends GameObject{
     private static final int SPEED = 10;
     private Dir dir = Dir.DOWN;
     private int x, y;
@@ -18,6 +18,7 @@ public class Bullet {
     public static int HEIGHT = ResourceMgr.getInstance().getBulletL().getHeight();
 
     private Rectangle rect = new Rectangle();
+
 
 
     private boolean living = true;
@@ -34,7 +35,7 @@ public class Bullet {
         rect.height=HEIGHT;
         rect.width=WIDTH;
 
-        GameFacade.getInstance().getBullets().add(this);
+        GameModel.getInstance().add(this);
     }
 
     public Dir getDir() {
@@ -82,7 +83,7 @@ public class Bullet {
             living = false;
         }
         if (!living) {
-            GameFacade.getInstance().getBullets().remove(this);
+            GameModel.getInstance().remove(this);
         }
         rect.x=this.x;
         rect.y=this.y;
@@ -99,7 +100,15 @@ public class Bullet {
         }
     }
 
-    private void die() {
+    public void die() {
         this.living = false;
+    }
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public Group getGroup() {
+        return group;
     }
 }

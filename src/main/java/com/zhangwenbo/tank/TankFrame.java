@@ -2,7 +2,7 @@ package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.bean.Tank;
-import com.zhangwenbo.tank.facade.GameFacade;
+import com.zhangwenbo.tank.model.GameModel;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -16,7 +16,7 @@ public class TankFrame extends Frame {
 
     public static final int GAME_WIDTH = 1024, GAME_HEIGHT = 768;
 
-    GameFacade gf = GameFacade.getInstance();
+    GameModel gf = GameModel.getInstance();
 
 
     public TankFrame() {

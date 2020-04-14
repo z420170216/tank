@@ -3,7 +3,7 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
-import com.zhangwenbo.tank.facade.GameFacade;
+import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
 import com.zhangwenbo.tank.strategy.FireStrategy;
@@ -14,8 +14,8 @@ import java.lang.reflect.Constructor;
 import java.util.Random;
 
 
-public class Tank {
-    private int x = 300, y = 500;
+public class Tank extends GameObject {
+    int oldX, oldY;
     public static int WIDTH = ResourceMgr.getInstance().getTankL().getWidth();
     public static int HEIGHT = ResourceMgr.getInstance().getTankL().getHeight();
     private static final int SPEED = 5;
@@ -28,7 +28,6 @@ public class Tank {
     private FireStrategy fs = null;
 
     private Rectangle rect = new Rectangle();
-
 
 
     public Tank() {
@@ -46,27 +45,27 @@ public class Tank {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
-        try{
-            if(group == Group.GOOD){
+        try {
+            if (group == Group.GOOD) {
                 Class<?> clazz = Class.forName(PropertyMgr.getInstance().getString("goodFS"));
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
                 constructor.setAccessible(true);
                 fs = (FireStrategy) constructor.newInstance();
-            }else{
+            } else {
                 Class<?> clazz = Class.forName(PropertyMgr.getInstance().getString("badFS"));
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
                 constructor.setAccessible(true);
                 fs = (FireStrategy) constructor.newInstance();
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     public void paint(Graphics g) {
         if (!living) {
-            GameFacade.getInstance().getTanks().remove(this);
+            GameModel.getInstance().remove(this);
             return;
         }
         move();
@@ -88,6 +87,8 @@ public class Tank {
     }
 
     private void move() {
+        oldX = x;
+        oldY = y;
         if (moving) {
             switch (dir) {
                 case UP:
@@ -117,6 +118,11 @@ public class Tank {
         rect.y = this.y;
     }
 
+    public void reset() {
+        this.x=oldX;
+        this.y=oldY;
+    }
+
     private void boundsCheck() {
         if (x < 0) x = 0;
         if (x > TankFrame.GAME_WIDTH - WIDTH) x = TankFrame.GAME_WIDTH - WIDTH;
@@ -134,7 +140,7 @@ public class Tank {
 
     public void die() {
         this.living = false;
-        GameFacade.getInstance().getExploads().add(new Expload(this.x + WIDTH / 2 - Expload.WIDTH / 2, this.y + HEIGHT / 2 - Expload.HEIGHT / 2, this.group));
+        GameModel.getInstance().add(new Expload(this.x + WIDTH / 2 - Expload.WIDTH / 2, this.y + HEIGHT / 2 - Expload.HEIGHT / 2, this.group));
         new Thread(new Runnable() {
             public void run() {
                 new Audio("audio/explode.wav").play();
@@ -154,6 +160,15 @@ public class Tank {
         return y;
     }
 
+    public int getOldX() {
+        return oldX;
+    }
+
+    public int getOldY() {
+        return oldY;
+    }
+
+
     public Dir getDir() {
         return dir;
     }
@@ -169,4 +184,6 @@ public class Tank {
     public Rectangle getRect() {
         return rect;
     }
+
+
 }

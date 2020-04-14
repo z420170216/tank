@@ -1,12 +1,12 @@
 package com.zhangwenbo.tank.bean;
 
 import com.zhangwenbo.tank.Enum.Group;
-import com.zhangwenbo.tank.facade.GameFacade;
+import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
 
 import java.awt.*;
 
-public class Expload {
+public class Expload extends GameObject{
     private int x = 300, y = 500;
     public static int WIDTH = ResourceMgr.getInstance().getExplodes()[0].getWidth();
     public static int HEIGHT = ResourceMgr.getInstance().getExplodes()[0].getHeight();
@@ -33,7 +33,7 @@ public class Expload {
         }
         if (step >= resourceMgr.getExplodes().length) {
             die();
-            GameFacade.getInstance().getExploads().remove(this);
+            GameModel.getInstance().remove(this);
         }
     }
 

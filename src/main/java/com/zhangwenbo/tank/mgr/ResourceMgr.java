@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class ResourceMgr {
-    private BufferedImage tankL, tankR, tankU, tankD, bulletL, bulletR, bulletD, bulletU;
+    private BufferedImage goodTankL, goodTankR, goodTankU, goodTankD, bulletL, bulletR, bulletD, bulletU;
     private BufferedImage[] explodes = new BufferedImage[16];
     private static ResourceMgr INSTANCE = null;
 
@@ -15,10 +15,10 @@ public class ResourceMgr {
     static {
         try {
             INSTANCE = new ResourceMgr();
-            INSTANCE.tankL = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankL.gif"));
-            INSTANCE.tankR = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankR.gif"));
-            INSTANCE.tankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankU.gif"));
-            INSTANCE.tankD = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/tankD.gif"));
+            INSTANCE.goodTankL = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/GoodTank1.gif"));
+            INSTANCE.goodTankR = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/goodTankR.gif"));
+            INSTANCE.goodTankU = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/goodTankU.gif"));
+            INSTANCE.goodTankD = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/goodTankD.gif"));
             INSTANCE.bulletL = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/bulletL.gif"));
             INSTANCE.bulletR = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/bulletR.gif"));
             INSTANCE.bulletD = ImageIO.read(ResourceMgr.class.getClassLoader().getResourceAsStream("images/bulletD.gif"));
@@ -35,23 +35,23 @@ public class ResourceMgr {
         return INSTANCE;
     }
 
-    public BufferedImage getTankL() {
-        return tankL;
+    public BufferedImage getgoodTankL() {
+        return goodTankL;
     }
 
 
-    public BufferedImage getTankR() {
-        return tankR;
+    public BufferedImage getgoodTankR() {
+        return goodTankR;
     }
 
 
-    public BufferedImage getTankU() {
-        return tankU;
+    public BufferedImage getgoodTankU() {
+        return goodTankU;
     }
 
 
-    public BufferedImage getTankD() {
-        return tankD;
+    public BufferedImage getgoodTankD() {
+        return goodTankD;
     }
 
 
