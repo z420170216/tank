@@ -4,6 +4,7 @@ import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.bean.GameObject;
 import com.zhangwenbo.tank.bean.Tank;
+import com.zhangwenbo.tank.bean.Wall;
 import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.mor.ChainCollider;
 import com.zhangwenbo.tank.mor.Collider;
@@ -35,24 +36,31 @@ public class GameModel {
             for (int j = i + 1; j < objects.size(); j++) {
                 GameObject o1 = objects.get(i);
                 GameObject o2 = objects.get(j);
-                chainCollider.collideWith(o1,o2);
+                chainCollider.collideWith(o1, o2);
             }
         }
     }
 
     private GameModel() {
+
+    }
+
+    static {
+        init();
+    }
+
+    private static void init() {
         PropertyMgr propMgr = PropertyMgr.getInstance();
         for (int i = 0; i < propMgr.getInteger("initTankCount"); i++) {
-            objects.add(new Tank(200 + i * 80, 200, Group.BAD, Dir.DOWN));
+            new Tank(200 + i * 80, 200, Group.BAD, Dir.DOWN);
+        }
+        for (int i = 0; i < propMgr.getInteger("initWallCount"); i++) {
+            new Wall(200 + i * 500, 300);
         }
     }
 
     public static GameModel getInstance() {
         return instance;
-    }
-
-    public List<GameObject> getObjects() {
-        return objects;
     }
 
     public void add(GameObject go) {

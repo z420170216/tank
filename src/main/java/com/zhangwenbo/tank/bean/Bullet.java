@@ -3,23 +3,17 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
-import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
+import com.zhangwenbo.tank.model.GameModel;
 
 import java.awt.*;
 
-public class Bullet extends GameObject{
+public class Bullet extends GameObject {
     private static final int SPEED = 10;
     private Dir dir = Dir.DOWN;
-    private int x, y;
     private Group group = Group.BAD;
 
-    public static int WIDTH = ResourceMgr.getInstance().getBulletL().getWidth();
-    public static int HEIGHT = ResourceMgr.getInstance().getBulletL().getHeight();
-
     private Rectangle rect = new Rectangle();
-
-
 
     private boolean living = true;
 
@@ -29,11 +23,19 @@ public class Bullet extends GameObject{
         this.y = y;
         this.group = group;
         this.dir = dir;
+        if (group == Group.GOOD) {
+            this.width = ResourceMgr.getInstance().getGoodBulletL().getWidth();
+            this.height = ResourceMgr.getInstance().getGoodBulletL().getHeight();
+        } else {
+            this.width = ResourceMgr.getInstance().getBadBulletL().getWidth();
+            this.height = ResourceMgr.getInstance().getBadBulletL().getHeight();
+        }
 
-        rect.x=x;
-        rect.y=y;
-        rect.height=HEIGHT;
-        rect.width=WIDTH;
+
+        this.rect.x = x;
+        this.rect.y = y;
+        this.rect.height = height;
+        this.rect.width = width;
 
         GameModel.getInstance().add(this);
     }
@@ -42,24 +44,32 @@ public class Bullet extends GameObject{
         return dir;
     }
 
-    public void setDir(Dir dir) {
-        this.dir = dir;
-    }
-
     public void paint(Graphics g) {
         move();
         switch (dir) {
             case UP:
-                g.drawImage(ResourceMgr.getInstance().getBulletU(), x, y, null);
+                if (group == Group.GOOD)
+                    g.drawImage(ResourceMgr.getInstance().getGoodBulletU(), x, y, null);
+                else
+                    g.drawImage(ResourceMgr.getInstance().getBadBulletU(), x, y, null);
                 break;
             case DOWN:
-                g.drawImage(ResourceMgr.getInstance().getBulletD(), x, y, null);
+                if (group == Group.GOOD)
+                    g.drawImage(ResourceMgr.getInstance().getGoodBulletD(), x, y, null);
+                else
+                    g.drawImage(ResourceMgr.getInstance().getBadBulletD(), x, y, null);
                 break;
             case LEFT:
-                g.drawImage(ResourceMgr.getInstance().getBulletL(), x, y, null);
+                if (group == Group.GOOD)
+                    g.drawImage(ResourceMgr.getInstance().getGoodBulletL(), x, y, null);
+                else
+                    g.drawImage(ResourceMgr.getInstance().getBadBulletL(), x, y, null);
                 break;
             case RIGHT:
-                g.drawImage(ResourceMgr.getInstance().getBulletR(), x, y, null);
+                if (group == Group.GOOD)
+                    g.drawImage(ResourceMgr.getInstance().getGoodBulletR(), x, y, null);
+                else
+                    g.drawImage(ResourceMgr.getInstance().getBadBulletR(), x, y, null);
                 break;
         }
     }
@@ -85,19 +95,8 @@ public class Bullet extends GameObject{
         if (!living) {
             GameModel.getInstance().remove(this);
         }
-        rect.x=this.x;
-        rect.y=this.y;
-    }
-
-    public void collideWith(Tank tank) {
-        if (this.group == tank.getGroup()) {
-            return ;
-        } else {
-            if (this.rect.intersects(tank.getRect())) {
-                this.die();
-                tank.die();
-            }
-        }
+        rect.x = this.x;
+        rect.y = this.y;
     }
 
     public void die() {

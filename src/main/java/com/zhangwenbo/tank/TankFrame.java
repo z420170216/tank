@@ -2,6 +2,7 @@ package com.zhangwenbo.tank;
 
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.bean.Tank;
+import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.model.GameModel;
 
 import java.awt.*;
@@ -14,10 +15,7 @@ public class TankFrame extends Frame {
 
     private Image offScreenImage = null;
 
-    public static final int GAME_WIDTH = 1024, GAME_HEIGHT = 768;
-
-    GameModel gf = GameModel.getInstance();
-
+    public static final int GAME_WIDTH = PropertyMgr.getInstance().getInteger("gameWidth"), GAME_HEIGHT = PropertyMgr.getInstance().getInteger("gameHeight");
 
     public TankFrame() {
         setSize(GAME_WIDTH, GAME_HEIGHT);
@@ -55,7 +53,7 @@ public class TankFrame extends Frame {
                         bU = true;
                         break;
                     case KeyEvent.VK_CONTROL:
-                        gf.getMyTank().fire();
+                        GameModel.getInstance().getMyTank().fire();
                         break;
                     default:
                 }
@@ -85,7 +83,7 @@ public class TankFrame extends Frame {
             }
 
             private void setMainTankDir() {
-                Tank myTank = gf.getMyTank();
+                Tank myTank = GameModel.getInstance().getMyTank();
                 if (!bL && !bR && !bU && !bD) {
                     myTank.setMoving(false);
                 } else {
@@ -116,7 +114,7 @@ public class TankFrame extends Frame {
 
     @Override
     public void paint(Graphics g) {
-        gf.paint(g);
+        GameModel.getInstance().paint(g);
     }
 
 }

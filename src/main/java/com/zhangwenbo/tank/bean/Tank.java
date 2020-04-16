@@ -3,9 +3,9 @@ package com.zhangwenbo.tank.bean;
 import com.zhangwenbo.tank.Enum.Dir;
 import com.zhangwenbo.tank.Enum.Group;
 import com.zhangwenbo.tank.TankFrame;
-import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.mgr.PropertyMgr;
 import com.zhangwenbo.tank.mgr.ResourceMgr;
+import com.zhangwenbo.tank.model.GameModel;
 import com.zhangwenbo.tank.strategy.FireStrategy;
 import com.zhangwenbo.tank.utils.Audio;
 
@@ -15,9 +15,7 @@ import java.util.Random;
 
 
 public class Tank extends GameObject {
-    int oldX, oldY;
-    public static int WIDTH = ResourceMgr.getInstance().getTankL().getWidth();
-    public static int HEIGHT = ResourceMgr.getInstance().getTankL().getHeight();
+    private int oldX, oldY;
     private static final int SPEED = 5;
     private Dir dir = Dir.DOWN;
     private boolean moving = true;
@@ -40,13 +38,15 @@ public class Tank extends GameObject {
         this.group = group;
         this.y = y;
         this.dir = dir;
-
+        this.width = ResourceMgr.getInstance().getBadTankL().getWidth();
+        this.height = ResourceMgr.getInstance().getBadTankL().getHeight();
         rect.x = this.x;
         rect.y = this.y;
-        rect.width = WIDTH;
-        rect.height = HEIGHT;
+        rect.width = width;
+        rect.height = height;
         try {
             if (group == Group.GOOD) {
+                moving = false;
                 Class<?> clazz = Class.forName(PropertyMgr.getInstance().getString("goodFS"));
                 Constructor<?> constructor = clazz.getDeclaredConstructor();
                 constructor.setAccessible(true);
@@ -60,6 +60,9 @@ public class Tank extends GameObject {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (group == Group.BAD) {
+            GameModel.getInstance().add(this);
+        }
     }
 
 
@@ -72,16 +75,32 @@ public class Tank extends GameObject {
         ResourceMgr resourceMgr = ResourceMgr.getInstance();
         switch (dir) {
             case UP:
-                g.drawImage(resourceMgr.getTankU(), x, y, null);
+                if (group == Group.BAD) {
+                    g.drawImage(resourceMgr.getBadTankU(), x, y, null);
+                } else {
+                    g.drawImage(resourceMgr.getGoodTankU(), x, y, null);
+                }
                 break;
             case DOWN:
-                g.drawImage(resourceMgr.getTankD(), x, y, null);
+                if (group == Group.BAD) {
+                    g.drawImage(resourceMgr.getBadTankD(), x, y, null);
+                } else {
+                    g.drawImage(resourceMgr.getGoodTankD(), x, y, null);
+                }
                 break;
             case LEFT:
-                g.drawImage(resourceMgr.getTankL(), x, y, null);
+                if (group == Group.BAD) {
+                    g.drawImage(resourceMgr.getBadTankL(), x, y, null);
+                } else {
+                    g.drawImage(resourceMgr.getGoodTankL(), x, y, null);
+                }
                 break;
             case RIGHT:
-                g.drawImage(resourceMgr.getTankR(), x, y, null);
+                if (group == Group.BAD) {
+                    g.drawImage(resourceMgr.getBadTankR(), x, y, null);
+                } else {
+                    g.drawImage(resourceMgr.getGoodTankR(), x, y, null);
+                }
                 break;
         }
     }
@@ -119,15 +138,15 @@ public class Tank extends GameObject {
     }
 
     public void reset() {
-        this.x=oldX;
-        this.y=oldY;
+        this.x = oldX;
+        this.y = oldY;
     }
 
     private void boundsCheck() {
         if (x < 0) x = 0;
-        if (x > TankFrame.GAME_WIDTH - WIDTH) x = TankFrame.GAME_WIDTH - WIDTH;
+        if (x > TankFrame.GAME_WIDTH - width) x = TankFrame.GAME_WIDTH - width;
         if (y < 30) y = 30;
-        if (y > TankFrame.GAME_HEIGHT - HEIGHT) y = TankFrame.GAME_HEIGHT - HEIGHT;
+        if (y > TankFrame.GAME_HEIGHT - height) y = TankFrame.GAME_HEIGHT - height;
     }
 
     private void turn() {
@@ -140,7 +159,7 @@ public class Tank extends GameObject {
 
     public void die() {
         this.living = false;
-        GameModel.getInstance().add(new Expload(this.x + WIDTH / 2 - Expload.WIDTH / 2, this.y + HEIGHT / 2 - Expload.HEIGHT / 2, this.group));
+        new Expload(this.x + width / 2 - Expload.WIDTH / 2, this.y + height / 2 - Expload.HEIGHT / 2, this.group);
         new Thread(new Runnable() {
             public void run() {
                 new Audio("audio/explode.wav").play();
@@ -151,23 +170,6 @@ public class Tank extends GameObject {
     public Group getGroup() {
         return group;
     }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getOldX() {
-        return oldX;
-    }
-
-    public int getOldY() {
-        return oldY;
-    }
-
 
     public Dir getDir() {
         return dir;

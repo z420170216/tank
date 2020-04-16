@@ -1,5 +1,5 @@
 package com.zhangwenbo.tank.Enum;
 
 public enum Dir {
-    LEFT,RIGHT,UP,DOWN
+    LEFT, RIGHT, UP, DOWN
 }

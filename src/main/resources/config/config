@@ -1,6 +1,10 @@
+#initSystemConfig
+gameWidth=1600
+gameHeight=900
 initTankCount=10
+initWallCount=2
 #FireStrategy
 goodFS=com.zhangwenbo.tank.strategy.FourDirFireStrategy
 badFS=com.zhangwenbo.tank.strategy.DefaultFireStrategy
 #Collider
-Collider=com.zhangwenbo.tank.mor.TankBulletCollider,com.zhangwenbo.tank.mor.TankTankCollider
+Collider=com.zhangwenbo.tank.mor.TankBulletCollider,com.zhangwenbo.tank.mor.TankTankCollider,com.zhangwenbo.tank.mor.WallTankCollider,com.zhangwenbo.tank.mor.WallBulletCollider
